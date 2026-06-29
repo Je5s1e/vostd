@@ -8,7 +8,8 @@ use spin::Once;
 
 use crate::{
     io::io_mem::IoMem,
-    mm::{CachePolicy, PageFlags},
+    mm::page_prop::{CachePolicy, PageFlags},
+    // mm::{CachePolicy, PageFlags},
     util::range_alloc::RangeAllocator,
 };
 

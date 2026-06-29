@@ -38,16 +38,16 @@ pub mod arch;
 //#[path = "arch/riscv/mod.rs"]
 //pub mod arch;
 pub mod boot;
-/*pub mod bus;
-pub mod console;
+pub mod bus;
+/*pub mod console;
 pub mod cpu;*/
 pub mod error;
 /*pub mod io;
 pub mod logger;*/
 pub mod mm;
-/*pub mod panic;
+/*pub mod panic;*/
 pub mod prelude;
-pub mod smp;*/
+/*pub mod smp;*/
 pub mod sync;
 pub mod task;
 // pub mod timer;

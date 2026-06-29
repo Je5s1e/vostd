@@ -1,7 +1,34 @@
 // SPDX-License-Identifier: MPL-2.0
 //! PCI bus access
-use super::device::io_port::{ReadWriteAccess, WriteOnlyAccess};
-use crate::{bus::pci::PciDeviceLocation, io::IoPort, prelude::*};
+use crate::{bus::pci::PciDeviceLocation, prelude::*};
+// Original Rust: use crate::io::IoPort; use super::device::io_port::{ReadWriteAccess, WriteOnlyAccess};
+
+// Local stubs for hardware types not yet available under Verus.
+use core::marker::PhantomData;
+pub struct WriteOnlyAccess;
+pub struct ReadWriteAccess;
+
+pub struct IoPort<T, A> {
+    port: u16,
+    _value: PhantomData<T>,
+    _access: PhantomData<A>,
+}
+
+impl<T, A> IoPort<T, A> {
+    pub const unsafe fn new(port: u16) -> Self {
+        IoPort {
+            port,
+            _value: PhantomData,
+            _access: PhantomData,
+        }
+    }
+    pub fn read(&self) -> T {
+        unimplemented!()
+    }
+    pub fn write(&self, _value: T) {
+        unimplemented!()
+    }
+}
 
 static PCI_ADDRESS_PORT: IoPort<u32, WriteOnlyAccess> = unsafe { IoPort::new(0x0CF8) };
 static PCI_DATA_PORT: IoPort<u32, ReadWriteAccess> = unsafe { IoPort::new(0x0CFC) };

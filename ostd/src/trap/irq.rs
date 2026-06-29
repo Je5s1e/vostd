@@ -12,7 +12,7 @@ use crate::{
         irq::{self /* , IrqRemapping, IRQ_NUM_MAX, IRQ_NUM_MIN */},
         /* trap::TrapFrame, */
     },
-    // prelude::*,
+    prelude::Result,
     sync::{GuardTransfer, RwLock, SpinLock /* WriteIrqDisabled */},
     // task::atomic_mode::InAtomicMode,
     // Error,
@@ -192,6 +192,33 @@ pub(super) fn process_top_half(trap_frame: &TrapFrame, irq_num: usize) {
         callback(trap_frame);
     }
 }*/
+
+// Minimal IrqLine stub for PCI bus migration.
+// The full IrqLine is inside the comment block above; this stub provides
+// enough API surface for bus/pci/capability/msix.rs.
+#[derive(Debug, Clone)]
+pub struct IrqLine {
+    num_val: u8,
+    remapping_idx: Option<u16>,
+}
+
+impl IrqLine {
+    pub fn alloc() -> Result<Self> {
+        unimplemented!()
+    }
+
+    pub fn alloc_specific(irq_num: u8) -> Result<Self> {
+        unimplemented!()
+    }
+
+    pub fn num(&self) -> u8 {
+        self.num_val
+    }
+
+    pub fn remapping_index(&self) -> Option<u16> {
+        self.remapping_idx
+    }
+}
 
 // ####### IRQ Guards #######
 verus! {

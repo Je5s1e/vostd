@@ -9,14 +9,76 @@ use bitflags::bitflags;
 
 use super::PciDeviceLocation;
 use crate::{
-    Error, Result,
-    arch::device::io_port::{PortRead, PortWrite},
-    io::IoMem,
+    error::Error,
     mm::{
-        PodOnce, VmIoOnce,
+        PodOnce,
         page_prop::{CachePolicy, PageFlags},
     },
+    prelude::Result,
 };
+
+// Local stubs for hardware types not yet available under Verus.
+// Original Rust uses: arch::device::io_port::{PortRead, PortWrite} (from x86_64), io::IoMem
+
+/// Stub PortRead trait (original: arch::device::io_port::PortRead)
+pub trait PortRead: Sized {
+    unsafe fn read_from_port(_port: u16) -> Self;
+}
+impl PortRead for u8 {
+    unsafe fn read_from_port(_port: u16) -> Self {
+        0
+    }
+}
+impl PortRead for u16 {
+    unsafe fn read_from_port(_port: u16) -> Self {
+        0
+    }
+}
+impl PortRead for u32 {
+    unsafe fn read_from_port(_port: u16) -> Self {
+        0
+    }
+}
+
+/// Stub PortWrite trait (original: arch::device::io_port::PortWrite)
+pub trait PortWrite: Sized {
+    unsafe fn write_to_port(_port: u16, _value: Self);
+}
+impl PortWrite for u8 {
+    unsafe fn write_to_port(_port: u16, _value: Self) {}
+}
+impl PortWrite for u16 {
+    unsafe fn write_to_port(_port: u16, _value: Self) {}
+}
+impl PortWrite for u32 {
+    unsafe fn write_to_port(_port: u16, _value: Self) {}
+}
+
+/// Stub IoMem (original: crate::io::IoMem)
+#[derive(Debug, Clone)]
+pub struct IoMem {
+    len: usize,
+}
+
+impl IoMem {
+    pub unsafe fn new(
+        _range: core::ops::Range<usize>,
+        _flags: PageFlags,
+        _cache: CachePolicy,
+    ) -> Self {
+        IoMem {
+            len: _range.end - _range.start,
+        }
+    }
+
+    pub fn read_once<T>(&self, _offset: usize) -> Result<T> {
+        unimplemented!()
+    }
+
+    pub fn write_once<T>(&self, _offset: usize, _value: &T) -> Result<()> {
+        unimplemented!()
+    }
+}
 
 /// Offset in PCI device's common configuration space(Not the PCI bridge).
 #[repr(u16)]
@@ -297,7 +359,7 @@ impl MemoryBar {
             io_memory: unsafe {
                 IoMem::new(
                     (base as usize)..((base + size as u64) as usize),
-                    PageFlags::RW,
+                    PageFlags::RW(),
                     CachePolicy::Uncacheable,
                 )
             },
